@@ -34,8 +34,8 @@ services:
   celery:
     restart: always
     build:
-      context: .
-    command: celery -A core worker -l info
+      context: ./server
+    command: celery -A server worker -l info
     volumes:
       - ./server:/server
     env_file:
