@@ -22,29 +22,28 @@ services:
     depends_on:
       - db
 
-  client:
-    container_name: client
-    build: ./client
-    stdin_open: true
-    tty: true
-    working_dir: /src
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./client:/src
-    env_file:
-      - .env.dev
-    command: >
-      sh -c "npm install -g npm@latest && npm install && npm run dev"
-    depends_on:
-      - server
-      - db
-
   db:
     container_name: db
     image: postgres
     env_file:
       - .env.dev
+
+  redis:
+    image: redis:alpine
+
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery -A core worker -l info
+    volumes:
+      - ./server:/server
+    env_file:
+      - .env.dev
+    depends_on:
+      - db
+      - redis
+      - server
 
 volumes:
   run_vol:

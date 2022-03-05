@@ -159,6 +159,16 @@ SWAGGER_SETTINGS = {
     }
 }
 
+# CELERY SETTINGS
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_RESULT_BACKEND = "redis://redis:6379"
+# CELERY_BEAT_SCHEDULE = {
+#     "youtube_get_video_data": {
+#         "task": "youtubeAPI.tasks.youtube_get_video_data",
+#         "schedule": timedelta(minutes=1),
+#     },
+# }
+
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
     "site_title": "Admin Panel",
