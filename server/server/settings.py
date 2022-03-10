@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "drf_yasg",
+    "silk",
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -56,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "silk.middleware.SilkyMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
@@ -159,28 +162,40 @@ SWAGGER_SETTINGS = {
 }
 
 # CELERY SETTINGS
-CELERY_BROKER_URL = "redis://redis:6379"
-CELERY_RESULT_BACKEND = "redis://redis:6379"
-# CELERY_BEAT_SCHEDULE = {
-#     "youtube_get_video_data": {
-#         "task": "youtubeAPI.tasks.youtube_get_video_data",
-#         "schedule": timedelta(minutes=1),
-#     },
-# }
+CELERY_BROKER_URL = "amqp://guest:guest@rabbitmq:5672"
+CELERY_RESULT_BACKEND = "redis://redis-celery:6379"
 
+# CACHE SETTINGS
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis-cache:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": "YourPasswordHere1234"
+        }
+    }
+}
+
+# SILK SETTINGS 
+SILKY_PYTHON_PROFILER = True
+SILKY_AUTHENTICATION = True 
+SILKY_AUTHORISATION = True  
+
+# ADMIN PANEL SETTINGS
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
-    "site_title": "Admin Panel",
+    "site_title": "MCQ Server Admin Panel",
     # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_brand": "Server",
-    "site_header": "Server",
+    "site_brand": "MCQ Server",
+    "site_header": "MCQ Server",
     # CSS classes that are applied to the logo above
     "site_logo_classes": "img-circle",
     # Relative path to a favicon for your site, will default to site_logo if absent (ideally 32x32 px)
     "site_icon": None,
     # "related_modal_active": True,
     # Welcome text on the login screen
-    "welcome_sign": "Welcome to the Server Admin Panel",
+    "welcome_sign": "Welcome to the MCQ Server Admin Panel",
     "show_ui_builder": True,
 }
 JAZZMIN_UI_TWEAKS = {

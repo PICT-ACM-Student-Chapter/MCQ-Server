@@ -21,6 +21,7 @@ services:
       sh -c "sh migrations.sh && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - db
+      - redis-cache
 
   db:
     container_name: db
@@ -28,10 +29,16 @@ services:
     env_file:
       - .env.dev
 
-  redis:
+  redis-celery:
+    container_name: redis-celery
+    image: redis:alpine
+  
+  redis-cache:
+    container_name: redis-cache
     image: redis:alpine
 
   celery:
+    container_name: celery
     restart: always
     build:
       context: ./server
@@ -42,8 +49,16 @@ services:
       - .env.dev
     depends_on:
       - db
-      - redis
+      - rabbitmq
       - server
+  
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management-alpine
+    ports: 
+      - "5672:5672"
+      - "15672:15672"
+
 
 volumes:
   run_vol:

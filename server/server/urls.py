@@ -47,6 +47,7 @@ urlpatterns = [
 
 urlpatterns += [
     # Admin endpoint
+    path('silk/', include('silk.urls')),
     path('admin/', admin.site.urls),
     # Auth endpoints
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
