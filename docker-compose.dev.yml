@@ -21,7 +21,6 @@ services:
       sh -c "sh migrations.sh && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - db
-      - redis-cache
 
   db:
     container_name: db
@@ -31,10 +30,6 @@ services:
 
   redis-celery:
     container_name: redis-celery
-    image: redis:alpine
-  
-  redis-cache:
-    container_name: redis-cache
     image: redis:alpine
 
   celery:

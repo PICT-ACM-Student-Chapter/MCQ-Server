@@ -166,16 +166,16 @@ CELERY_BROKER_URL = "amqp://guest:guest@rabbitmq:5672"
 CELERY_RESULT_BACKEND = "redis://redis-celery:6379"
 
 # CACHE SETTINGS
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis-cache:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "PASSWORD": "YourPasswordHere1234"
-        }
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://redis-cache:6379/1",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "PASSWORD": "YourPasswordHere1234"
+#         }
+#     }
+# }
 
 # SILK SETTINGS 
 SILKY_PYTHON_PROFILER = True
