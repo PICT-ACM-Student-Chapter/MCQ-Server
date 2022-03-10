@@ -1,15 +1,10 @@
 
-# Django-Next.js-Boilerplate!
+# MCQ Server
 
-This is a basic boilerplate starter for a fullstack web project with Django as the server, PostgreSQL as the database and Next.js as the frontend.
-
-<a href="https://www.codefactor.io/repository/github/akshat2602/django-nextjs-boilerplate/overview/master" target="_blank"> <img src="https://img.shields.io/codefactor/grade/github/akshat2602/django-nextjs-boilerplate?style=flat-square" /> </a>
-<a href="https://github.com/akshat2602/django-nextjs-template/blob/master/LICENSE" target="_blank"> <img src="https://img.shields.io/github/license/akshat2602/django-nextjs-template?style=flat-square" /> </a>
-<a href="https://github.com/akshat2602/django-nextjs-template" target="_blank"> <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/akshat2602/django-nextjs-template?style=flat-square"> </a>
+This is the repo for the MCQ Platform's server with Django as the framework and PostgreSQL as the database.
 
 
-
-## About the template 
+## About the project.
 -   PostgreSQL used as the primary database.
 -   Superuser is already initialized with the credentials: Username- `admin`, Email- `admin@admin.com`, Password- `admin`
 -   Integration with Django Rest Framework
@@ -28,8 +23,8 @@ To get a local copy of this template up and running on your machine, follow thes
 `sudo sh get-docker.sh`
 
 ### Installation
-- Clone the repo `git clone https://github.com/akshat2602/django-nextjs-boilerplate.git`
-- Change the current directory to the template `cd django-nextjs-boilerplate`
+- Clone the repo `git clone https://github.com/PICT-ACM-Student-Chapter/MCQ-Server.git`
+- Change the current directory to the template `cd MCQ-Server`
 - Build the docker containers`docker-compose -f docker-compose.dev.yml build` for the dev containers and `docker-compose -f docker-compose.prod.yml build` for the prod containers
 - Run the docker containers`docker-compose -f docker-compose.dev.yml up` for the dev containers and `docker-compose -f docker-compose.prod.yml up` for the prod containers
 
@@ -44,8 +39,6 @@ API documentation is done using swagger. Visit `/swagger` for API documentation.
 <a href="https://www.nextjs.org/" target="_blank"> <img src="https://img.shields.io/badge/Next.JS-000000?style=for-the-badge&logo=next.js&logoColor=white"/> </a>
 <a href="https://www.typescriptlang.org/" target="_blank"><img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white"/></a>
 
-## Roadmap
-See the [open issues](https://github.com/akshat2602/django-nextjs-boilerplate/issues) for a list of proposed features (and known issues).
 
 ## Contributing
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -61,6 +54,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Akshat Sharma - [akshatsharma2602@gmail.com](mailto:akshatsharma2602@gmail.com)
-Project Link: [https://github.com/akshat2602/django-nextjs-boilerplate](https://github.com/akshat2602/django-nextjs-boilerplate)
+Project Link: [https://github.com/PICT-ACM-Student-Chapter/MCQ-Server](https://github.com/PICT-ACM-Student-Chapter/MCQ-Server)
 
