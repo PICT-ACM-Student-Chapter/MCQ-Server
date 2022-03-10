@@ -31,7 +31,8 @@ services:
     env_file:
       - .env.dev
   
-  redis:
+  redis-celery:
+    container_name: redis-celery
     image: redis:alpine
   
   celery:
@@ -48,6 +49,12 @@ services:
       - redis
       - server
 
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management-alpine
+    ports: 
+      - "5672:5672"
+      - "15672:15672"
 
 
 volumes:
