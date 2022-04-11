@@ -6,6 +6,7 @@ from .models import Question
 # Register your models here.
 class CsvImp(forms.Form):
     csv_upload=forms.FileField()
+
 class MyAdmin(admin.ModelAdmin):
     change_list_template = 'change_list.html'
     def get_urls(self):
