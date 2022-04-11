@@ -1,19 +1,25 @@
 import os
 import requests
-from rest_framework import status
+
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from django.contrib.auth import get_user_model
+
 from drf_yasg.utils import swagger_auto_schema
+
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import *
+from .serializers import UserEventSerializer, UserEventListSerializer
 from .models import Event, User_Event
 # Create your views here.
 
 User = get_user_model()
 
 class LoginView(APIView):
+    """LOGIN API VIEW THAT ACCEPTS EMAIL
+    AND PASSWORD AND RETURNS A TOKEN"""
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         password = request.data.get('password')
@@ -83,3 +89,42 @@ class LoginView(APIView):
                 'access': str(refresh.access_token),
             }
             return Response(data=data, status=status.HTTP_200_OK)
+
+
+class UserEventListView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    """API VIEW THAT RETURNS USER ALL USER EVENTS"""
+    @swagger_auto_schema(
+        operation_description="Returns user events",
+        responses={
+            200: UserEventListSerializer(many=True)
+        }
+    )
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        user_events = User_Event.objects.filter(fk_user=user)
+        serializer = UserEventListSerializer(user_events, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class UserEventGetView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    """API VIEW THAT RETURNS USER EVENT BY ID"""
+    @swagger_auto_schema(
+        operation_description="Returns user event by id",
+        responses={
+            200: UserEventSerializer()
+        }
+    )
+    def get(self, request, id):
+        user = request.user
+        try:
+            user_event = User_Event.objects.get(fk_user=user, id=id)
+        except User_Event.DoesNotExist:
+            return Response(data={'error': 'user event does not exist'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserEventSerializer(user_event)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)

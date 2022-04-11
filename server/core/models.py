@@ -12,7 +12,7 @@ class Event(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=50)
     ems_event_id = models.CharField(max_length=100)
-    ems_slot_id = models.CharField(max_length=100)
+    ems_slot_id = models.CharField(max_length=100, null=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
