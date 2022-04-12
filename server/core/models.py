@@ -1,3 +1,6 @@
+from ast import Try
+from email.policy import default
+from statistics import mode
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth import get_user_model
@@ -8,7 +11,8 @@ import uuid
 class Event(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=50)
-    ems_event_id = models.CharField(max_length=50)
+    ems_event_id = models.CharField(max_length=100)
+    ems_slot_id = models.CharField(max_length=100, null=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -35,10 +39,19 @@ class User_Question(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class User_Result(models.Model):
+class User_Event(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     fk_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     fk_event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    started = models.BooleanField(default=False)
+    finished = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+
+
+class User_Result(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    fk_user_event = models.ForeignKey(User_Event, on_delete=models.CASCADE)
     score = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

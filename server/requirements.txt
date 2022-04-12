@@ -12,3 +12,4 @@ celery[redis]==5.1.2
 django-celery-beat==2.2.1
 requests==2.7.0
 django-silk==4.3.0
+django-celery-results==2.2.0

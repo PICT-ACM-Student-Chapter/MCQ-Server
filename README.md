@@ -21,6 +21,10 @@ To get a local copy of this template up and running on your machine, follow thes
 - Docker
 `curl -fsSL https://get.docker.com -o get-docker.sh`
 `sudo sh get-docker.sh`
+`sudo apt install docker-compose`
+`sudo groupadd docker`
+`sudo usermod -aG docker $USER`
+`newgrp docker`
 
 ### Installation
 - Clone the repo `git clone https://github.com/PICT-ACM-Student-Chapter/MCQ-Server.git`
