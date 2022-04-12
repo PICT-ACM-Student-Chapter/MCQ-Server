@@ -2,7 +2,7 @@ from django import forms
 from django.shortcuts import render
 from django.urls import path
 from django.contrib import admin
-from .models import Question
+from .models import Question, User_Event, User_Question, Event, User_Result
 # Register your models here.
 class CsvImp(forms.Form):
     csv_upload=forms.FileField()
@@ -30,3 +30,8 @@ class MyAdmin(admin.ModelAdmin):
         data={"form":form}
         return render(request,'csv_upload.html',data)
 admin.site.register(Question,MyAdmin)
+
+admin.site.register(User_Event)
+admin.site.register(User_Question)
+admin.site.register(Event)
+admin.site.register(User_Result)
