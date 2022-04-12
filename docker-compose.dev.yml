@@ -28,8 +28,8 @@ services:
     env_file:
       - .env.dev
 
-  redis-celery:
-    container_name: redis-celery
+  redis:
+    container_name: redis
     image: redis:alpine
 
   celery:
@@ -44,15 +44,8 @@ services:
       - .env.dev
     depends_on:
       - db
-      - rabbitmq
+      - redis
       - server
-  
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3-management-alpine
-    ports: 
-      - "5672:5672"
-      - "15672:15672"
 
 
 volumes:
