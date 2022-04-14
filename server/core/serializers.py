@@ -42,3 +42,10 @@ class UserQuestionGetSerializer(serializers.ModelSerializer):
     class Meta: 
         model = User_Question
         fields = ['id', 'fk_question', 'answer', 'review_status']
+
+
+class UserQuestionAnswerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User_Question
+        fields = ['id', 'fk_question', 'answer', 'review_status']
