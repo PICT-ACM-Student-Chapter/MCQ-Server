@@ -15,6 +15,7 @@ class Event(models.Model):
     ems_slot_id = models.CharField(max_length=100, null=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    no_of_questions = models.PositiveIntegerField(default=20)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -33,7 +34,7 @@ class User_Question(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     fk_question = models.ForeignKey(Question, on_delete=models.CASCADE)
     fk_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    answer = models.PositiveIntegerField()
+    answer = models.PositiveIntegerField(null=True)
     review_status = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
