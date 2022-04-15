@@ -12,9 +12,11 @@ from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
 
 from rest_framework_simplejwt.tokens import RefreshToken
+from uritemplate import partial
 
-from .serializers import UserEventSerializer, UserEventListSerializer, UserQuestionRequestSerializer, UserQuestionGetSerializer
+from .serializers import UserEventSerializer, UserEventListSerializer, UserQuestionAnswerSerializer, UserQuestionRequestSerializer, UserQuestionGetSerializer
 from .models import Event, Question, User_Event, User_Question
+from .tasks import process_result
 # Create your views here.
 
 User = get_user_model()
@@ -146,17 +148,13 @@ class UserEventGetView(APIView):
 class UserQuestionAnswer(APIView):
     permission_classes = [permissions.IsAuthenticated]
     """API VIEW FOR POST REQUEST OF ANSWER MARKING/MARKING FOR REVIEW"""
-    
-    def post(self, request, *args, **kwargs):
-        user = request.user
-        serializer = UserQuestionRequestSerializer(data=request.data)
+    @swagger_auto_schema(request_body=UserQuestionAnswerSerializer,
+                         responses={200: UserQuestionAnswerSerializer})
+    def patch(self, request, *args, **kwargs):
+        user_question = User_Question.objects.get(id=request.data['id'])
+        serializer = UserQuestionRequestSerializer(user_question, data=request.data, partial=True)
         if serializer.is_valid():
-            user_question = User_Question.objects.get(id=serializer.validated_data.get('id'), 
-                                                    fk_user=user, 
-                                                    fk_question=serializer.validated_data.get('fk_question'))
-            user_question.answer = serializer.validated_data.get('answer')
-            user_question.review_status = serializer.validated_data.get('review_status')
-            user_question.save()
+            serializer.save()
             return Response(data=serializer.data, status=status.HTTP_200_OK)
 
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -175,16 +173,17 @@ class UserQuestionListView(APIView):
     def get(self, request, id, *args, **kwargs):
         user = request.user
         user_questions = User_Question.objects.filter(fk_user=user, 
-                                                    fk_question__fk_event__id=id)
+                                                    fk_question__fk_event=id)
         if user_questions:
             serializer = UserQuestionGetSerializer(user_questions, many=True)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
 
         else:
-            questions = list(Question.objects.filter(fk_event__id=id))
-            random_questions = random.sample(questions, questions[0].fk_event.no_of_questions)
-            for question in random_questions:
-                User_Question.objects.create(fk_user=user, fk_question=question)
+            questions = list(Question.objects.filter(fk_event=id))
+            if questions:
+                random_questions = random.sample(questions, min(questions[0].fk_event.no_of_questions, len(questions)))
+                for question in random_questions:
+                    User_Question.objects.create(fk_user=user, fk_question=question)
 
             # TODO: FIND AN ALTERNATIVE QUERY FOR THIS AFTER USER_QUESTION CREATION
             user_questions = User_Question.objects.filter(fk_user=user,
@@ -194,3 +193,19 @@ class UserQuestionListView(APIView):
                 return Response(data=serializer.data, status=status.HTTP_200_OK)
         
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserSubmitEventView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    """API VIEW THAT STARTS SUBMISSIONS PROCESS"""
+    def get(self, request, id, *args, **kwargs):
+        user = request.user
+        user_event = User_Event.objects.get(id=id)
+        if user_event.fk_user == user:
+            user_event.finished = True
+            user_event.save()
+            _ = process_result.apply_async(kwargs={"user_event_id": user_event.id})
+            return Response(data={"success":"Test submitted successfully!"}, status=status.HTTP_200_OK)
+
+        return Response(data={"error": "User not authorised"}, status=status.HTTP_403_FORBIDDEN)
