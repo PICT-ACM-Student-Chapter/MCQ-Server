@@ -1,7 +1,19 @@
 from rest_framework import serializers
+from djoser.serializers import UserSerializer
+from django.contrib.auth import get_user_model
 
 from .models import Question, User_Event, Event, User_Question
 
+User = get_user_model()
+class CustomUserSerializer(UserSerializer):
+    class Meta(UserSerializer.Meta): 
+        model = User
+        fields = (
+            'id',
+            'email',
+            'username',
+            'current_user_event',
+        )
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=100)

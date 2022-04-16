@@ -2,7 +2,8 @@ from django import forms
 from django.shortcuts import render
 from django.urls import path
 from django.contrib import admin
-from .models import Question, User_Event, User_Question, Event, User_Result
+from django.contrib.auth.admin import UserAdmin
+from .models import Question, User_Event, User_Question, Event, User_Result, User
 # Register your models here.
 class CsvImp(forms.Form):
     csv_upload=forms.FileField()
@@ -29,6 +30,21 @@ class MyAdmin(admin.ModelAdmin):
         form=CsvImp()
         data={"form":form}
         return render(request,'csv_upload.html',data)
+
+class CustomUserAdmin(UserAdmin):
+    fieldsets = (
+        *UserAdmin.fieldsets,
+        (
+            'Custom Fields',
+            {
+                'fields': (
+                    'current_user_event',
+                ),
+            },
+        ),
+    )
+admin.site.register(User, CustomUserAdmin)
+
 admin.site.register(Question,MyAdmin)
 
 admin.site.register(User_Event)

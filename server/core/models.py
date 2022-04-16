@@ -1,10 +1,15 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 
 import uuid
 
+class User(AbstractUser):
+    current_user_event = models.UUIDField(null=True)
+
 # Create your models here.
+# TODO: IMAGE FOR EVENT
 class Event(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=50)
@@ -17,6 +22,7 @@ class Event(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+# TODO: ADD IMAGE AND CODE FIELDS
 class Question(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     statement = models.TextField()
@@ -62,7 +68,3 @@ class User_Token(models.Model):
     is_valid = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-
-# # Extend User Model
-# class CustomUser

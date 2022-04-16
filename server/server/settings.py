@@ -44,11 +44,11 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     "corsheaders",
     "rest_framework",
+    "core",
     "djoser",
     "drf_yasg",
     "django_celery_results",
     "silk",
-    "core",
 ]
 
 MIDDLEWARE = [
@@ -84,6 +84,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'server.wsgi.application'
 
+AUTH_USER_MODEL='core.User'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -167,6 +168,12 @@ SWAGGER_SETTINGS = {
 CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
 
+# DJOSER SETTINGS 
+DJOSER = {
+    'SERIALIZERS': {
+        'current_user': 'core.serializers.CustomUserSerializer'
+    },
+}
 # CACHE SETTINGS
 # CACHES = {
 #     "default": {
