@@ -148,10 +148,11 @@ class UserQuestionAnswer(APIView):
                          responses={200: UserQuestionAnswerSerializer})
     def patch(self, request, *args, **kwargs):
         user_question = User_Question.objects.get(id=request.data['id'])
-        serializer = UserQuestionRequestSerializer(user_question, data=request.data, partial=True)
+        serializer = UserQuestionAnswerSerializer(user_question, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_200_OK)
+        print(serializer.errors)
 
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
