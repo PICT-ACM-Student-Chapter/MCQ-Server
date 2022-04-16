@@ -2,6 +2,7 @@ import os
 from datetime import datetime, timezone
 import requests
 import random
+import json
 
 from rest_framework import status, permissions
 from rest_framework.response import Response
@@ -14,7 +15,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import UserEventSerializer, UserEventListSerializer, UserQuestionAnswerSerializer, UserQuestionRequestSerializer, UserQuestionGetSerializer, LoginSerializer, EventListSerializer, QuestionSerializer
-from .models import Event, Question, User_Event, User_Question
+from .models import Event, Question, User_Event, User_Question, User_Token
 from .tasks import process_result
 # Create your views here.
 
@@ -30,16 +31,14 @@ class LoginView(APIView):
 
         if not email or not password:
             return Response(data={'error': 'invalid data'},
-                            status=status.HTTP_400_BAD_REQUEST)
+                            status=status.HTTP_400_BAD_REQUEST)            
 
-        # TODO: CHECK EMS API CALL AND RESPONSE
-        url = '{}/auth/login'.format(os.environ.get('EMS_API'))
+        url = '{}/user/signin'.format(os.environ.get('EMS_API'))
         data = {
             'email': email,
             'password': password
         }
-        res = requests.post(url, data=data)
-        # TODO: STORE USER TOKEN AFTER LOGIN SUCCESS
+        res = requests.post(url, data=data, verify=False)
         if res.status_code == status.HTTP_401_UNAUTHORIZED:
             return Response(data=res.json(),
                             status=status.HTTP_401_UNAUTHORIZED)
@@ -50,40 +49,38 @@ class LoginView(APIView):
         except User.DoesNotExist:
             user = User.objects.create_user(username=email,
                                             email=email, password=password)
-            user.first_name = res.json().get('user').get('fname')
-            user.last_name = res.json().get('user').get('lname')
+            user.first_name = res.json().get('user').get('first_name')
+            user.last_name = res.json().get('user').get('last_name')
             user.save()
+        # Create user_token object for future use
+        User_Token.objects.create(fk_user=user, token=res.json().get('token'))
 
         if res.status_code == status.HTTP_200_OK:
             token = res.json().get('token')
             # query my events
-            # TODO: CHECK EMS API CALL AND RESPONSE FOR SLOTS AND EVENTS
-            url = '{}/myevents'.format(os.environ.get('EMS_API'))
+            url = '{}/user_events'.format(os.environ.get('EMS_API'))
             myevent_res = requests.get(url, headers={
-                'Authorization': 'Bearer ' + token})
+                'Authorization': 'Bearer ' + token}, verify=False)
 
             if myevent_res.status_code == status.HTTP_401_UNAUTHORIZED:
                 return Response(data=myevent_res.json(),
                                 status=status.HTTP_401_UNAUTHORIZED)
 
-            events = myevent_res.json()
-
+            events = myevent_res.json().get('events')
             for event in events:
                 try:
-                    # TODO: CHECK JSON FOR EVENT RESPONSE
-                    slot_id = event['slot_id']['_id']
+                    slot_id = event.get('fk_slot')
                 except TypeError:
                     slot_id = None
 
                 if slot_id:
                     try:
                         event = Event.objects.get(ems_slot_id=slot_id)
+                        # create user contest
+                        ue, _ = User_Event.objects.get_or_create(
+                        fk_user=user, fk_event=event)
                     except Event.DoesNotExist:
                         continue
-
-                    # create user contest
-                    ue, _ = User_Event.objects.get_or_create(
-                        fk_user=user, fk_event=event)
 
             # create jwt token
             refresh = RefreshToken.for_user(user)
@@ -175,6 +172,18 @@ class UserQuestionListView(APIView):
         user_questions = User_Question.objects.filter(fk_user=user, 
                                                     fk_question__fk_event=id)
         if user_questions:
+            user_question = user_questions[0]
+            if user_question.fk_question.fk_event.end_time < datetime.now().replace(tzinfo=timezone.utc):
+                return Response(data={'error': 'event finished'},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            elif user_question.fk_question.fk_event.start_time > datetime.now().replace(tzinfo=timezone.utc):
+                return Response(data={'error': 'event not started yet'},
+                                status=status.HTTP_404_NOT_FOUND)
+            elif user_question.fk_question.fk_event.user_event_set.filter(fk_user=user, started=True, finished=True).exists():
+                return Response(data={'error': 'event submitted already'},
+                                status=status.HTTP_404_NOT_FOUND)
+
             serializer = UserQuestionGetSerializer(user_questions, many=True)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -185,7 +194,6 @@ class UserQuestionListView(APIView):
                 for question in random_questions:
                     User_Question.objects.create(fk_user=user, fk_question=question)
 
-            # TODO: FIND AN ALTERNATIVE QUERY FOR THIS AFTER USER_QUESTION CREATION
             user_questions = User_Question.objects.filter(fk_user=user,
                                                         fk_question__fk_event__id=id) 
             if user_questions:

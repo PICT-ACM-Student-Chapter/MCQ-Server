@@ -61,7 +61,7 @@ class User_Result(models.Model):
 class User_Token(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     fk_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    token = models.CharField(max_length=100)
+    token = models.CharField(max_length=500)
     is_valid = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
