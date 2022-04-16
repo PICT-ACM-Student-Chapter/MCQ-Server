@@ -12,7 +12,6 @@ from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
 
 from rest_framework_simplejwt.tokens import RefreshToken
-from uritemplate import partial
 
 from .serializers import UserEventSerializer, UserEventListSerializer, UserQuestionAnswerSerializer, UserQuestionRequestSerializer, UserQuestionGetSerializer
 from .models import Event, Question, User_Event, User_Question
