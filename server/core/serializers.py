@@ -34,7 +34,6 @@ class UserQuestionRequestSerializer(serializers.ModelSerializer):
         model = User_Question
         fields = ['id', 'fk_question', 'answer', 'review_status']
 
-
 class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta: 
@@ -46,7 +45,7 @@ class UserQuestionGetSerializer(serializers.ModelSerializer):
 
     class Meta: 
         model = User_Question
-        fields = ['id', 'fk_question', 'answer', 'review_status']
+        fields = ['id', 'fk_question', 'answer','review_status']
 
 
 class UserQuestionAnswerSerializer(serializers.ModelSerializer):
@@ -54,3 +53,5 @@ class UserQuestionAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_Question
         fields = ['id', 'fk_question', 'answer', 'review_status']
+        read_only_fields=['id', 'fk_question']
+
