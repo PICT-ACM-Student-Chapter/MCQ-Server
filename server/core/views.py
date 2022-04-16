@@ -2,7 +2,6 @@ import os
 from datetime import datetime, timezone
 import requests
 import random
-import json
 
 from rest_framework import status, permissions
 from rest_framework.response import Response
@@ -210,7 +209,13 @@ class UserSubmitEventView(APIView):
     def get(self, request, id, *args, **kwargs):
         user = request.user
         user_event = User_Event.objects.get(id=id)
-        if user_event.fk_user == user:
+        if user_event.fk_event.end_time < datetime.now().replace(tzinfo=timezone.utc):
+            return Response(data={'error': 'event finished'}, status=status.HTTP_400_BAD_REQUEST)
+
+        elif user_event.fk_event.start_time > datetime.now().replace(tzinfo=timezone.utc):
+            return Response(data={'error': 'event not started yet'}, status=status.HTTP_400_BAD_REQUEST)
+
+        elif user_event.fk_user == user:
             user_event.finished = True
             user_event.save()
             _ = process_result.apply_async(kwargs={"user_event_id": user_event.id})

@@ -1,6 +1,3 @@
-from ast import Try
-from email.policy import default
-from statistics import mode
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth import get_user_model
@@ -65,3 +62,7 @@ class User_Token(models.Model):
     is_valid = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+# # Extend User Model
+# class CustomUser
