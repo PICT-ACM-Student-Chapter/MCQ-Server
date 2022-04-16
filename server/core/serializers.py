@@ -47,7 +47,8 @@ class UserQuestionRequestSerializer(serializers.ModelSerializer):
         fields = ['id', 'fk_question', 'answer', 'review_status']
 
 class QuestionSerializer(serializers.ModelSerializer):
-
+    fk_event = EventListSerializer()
+    
     class Meta: 
         model = Question
         fields = ['id', 'statement', 'options', 'fk_event']
