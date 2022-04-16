@@ -169,8 +169,9 @@ class UserQuestionListView(APIView):
     )
     def get(self, request, id, *args, **kwargs):
         user = request.user
+        user_event = User_Event.objects.get(fk_user=user, id=id, started=True, finished=False)
         user_questions = User_Question.objects.filter(fk_user=user, 
-                                                    fk_question__fk_event=id)
+                                                    fk_question__fk_event=user_event.fk_event)
         if user_questions:
             user_question = user_questions[0]
             if user_question.fk_question.fk_event.end_time < datetime.now().replace(tzinfo=timezone.utc):

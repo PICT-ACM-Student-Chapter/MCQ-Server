@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
-from martor.models import MartorField
 
 import uuid
 
