@@ -13,7 +13,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import UserEventSerializer, UserEventListSerializer, UserQuestionAnswerSerializer, UserQuestionRequestSerializer, UserQuestionGetSerializer
+from .serializers import UserEventSerializer, UserEventListSerializer, UserQuestionAnswerSerializer, UserQuestionRequestSerializer, UserQuestionGetSerializer, LoginSerializer, EventListSerializer, QuestionSerializer
 from .models import Event, Question, User_Event, User_Question
 from .tasks import process_result
 # Create your views here.
@@ -23,6 +23,7 @@ User = get_user_model()
 class LoginView(APIView):
     """LOGIN API VIEW THAT ACCEPTS EMAIL
     AND PASSWORD AND RETURNS A TOKEN"""
+    @swagger_auto_schema(request_body=LoginSerializer)
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         password = request.data.get('password')

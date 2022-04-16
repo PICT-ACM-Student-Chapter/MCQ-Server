@@ -3,6 +3,11 @@ from rest_framework import serializers
 from .models import Question, User_Event, Event, User_Question
 
 
+class LoginSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=100)
+    password = serializers.CharField(max_length=100)
+
+    
 class EventListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
