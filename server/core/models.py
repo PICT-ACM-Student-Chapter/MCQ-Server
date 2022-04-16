@@ -9,11 +9,10 @@ class User(AbstractUser):
     current_user_event = models.UUIDField(null=True)
 
 # Create your models here.
-# TODO: IMAGE FOR EVENT
 class Event(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=50)
-    image_url = models.URLField(null=False)
+    image_url = models.URLField(null=True, blank=True)
     ems_event_id = models.CharField(max_length=100)
     ems_slot_id = models.CharField(max_length=100, null=True)
     start_time = models.DateTimeField()
@@ -23,12 +22,12 @@ class Event(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-# TODO: ADD IMAGE AND CODE FIELDS
 class Question(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     statement = models.TextField()
     options = ArrayField(models.TextField(), size=4)
     code = models.TextField(null=True, blank=True)
+    image_url = models.URLField(null=True, blank=True)
     correct_option = models.PositiveIntegerField()
     fk_event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
