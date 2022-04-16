@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
+from martor.models import MartorField
 
 import uuid
 
@@ -13,6 +14,7 @@ class User(AbstractUser):
 class Event(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=50)
+    image_url = models.URLField(null=False)
     ems_event_id = models.CharField(max_length=100)
     ems_slot_id = models.CharField(max_length=100, null=True)
     start_time = models.DateTimeField()
@@ -27,6 +29,7 @@ class Question(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     statement = models.TextField()
     options = ArrayField(models.TextField(), size=4)
+    code = models.TextField(null=True, blank=True)
     correct_option = models.PositiveIntegerField()
     fk_event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

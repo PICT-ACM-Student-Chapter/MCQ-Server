@@ -2,7 +2,10 @@ from django import forms
 from django.shortcuts import render
 from django.urls import path
 from django.contrib import admin
+from django.db import models
+from martor.widgets import AdminMartorWidget
 from django.contrib.auth.admin import UserAdmin
+
 from .models import Question, User_Event, User_Question, Event, User_Result, User
 # Register your models here.
 class CsvImp(forms.Form):
@@ -30,6 +33,10 @@ class MyAdmin(admin.ModelAdmin):
         form=CsvImp()
         data={"form":form}
         return render(request,'csv_upload.html',data)
+    
+    formfield_overrides = {
+        models.TextField: {'widget': AdminMartorWidget},
+    }
 
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
