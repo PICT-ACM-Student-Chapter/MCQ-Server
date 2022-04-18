@@ -131,11 +131,11 @@ class UserEventGetView(APIView):
             user_event = User_Event.objects.get(fk_user=user, id=id, started=True, finished=False)
             if user_event.fk_event.end_time < datetime.now().replace(tzinfo=timezone.utc):
                 return Response(data={'error': 'event finished'},
-                                status=status.HTTP_404_NOT_FOUND)
+                                status=status.HTTP_403_FORBIDDEN)
 
         except User_Event.DoesNotExist:
             return Response(data={'error': 'event finished or not started yet'},
-                            status=status.HTTP_404_NOT_FOUND)
+                            status=status.HTTP_403_FORBIDDEN)
 
         serializer = UserEventSerializer(instance=user_event)   
         return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -182,10 +182,10 @@ class UserQuestionListView(APIView):
 
             elif user_question.fk_question.fk_event.start_time > datetime.now().replace(tzinfo=timezone.utc):
                 return Response(data={'error': 'event not started yet'},
-                                status=status.HTTP_404_NOT_FOUND)
+                                status=status.HTTP_403_FORBIDDEN)
             elif user_question.fk_question.fk_event.user_event_set.filter(fk_user=user, started=True, finished=True).exists():
                 return Response(data={'error': 'event submitted already'},
-                                status=status.HTTP_404_NOT_FOUND)
+                                status=status.HTTP_403_FORBIDDEN)
 
             serializer = UserQuestionGetSerializer(user_questions, many=True)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -214,14 +214,16 @@ class UserSubmitEventView(APIView):
         user = request.user
         user_event = User_Event.objects.get(id=id)
         if user_event.fk_event.end_time < datetime.now().replace(tzinfo=timezone.utc):
-            return Response(data={'error': 'event finished'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={'error': 'event finished'}, status=status.HTTP_403_FORBIDDEN)
 
         elif user_event.fk_event.start_time > datetime.now().replace(tzinfo=timezone.utc):
-            return Response(data={'error': 'event not started yet'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={'error': 'event not started yet'}, status=status.HTTP_403_FORBIDDEN)
 
         elif user_event.fk_user == user:
             user_event.finished = True
             user_event.save()
+            user.current_user_event = None
+            user.save()
             _ = process_result.apply_async(kwargs={"user_event_id": user_event.id})
             return Response(data={"success":"Test submitted successfully!"}, status=status.HTTP_200_OK)
 
