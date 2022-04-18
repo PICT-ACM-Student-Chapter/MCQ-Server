@@ -170,6 +170,8 @@ class UserQuestionListView(APIView):
     def get(self, request, id, *args, **kwargs):
         user = request.user
         user_event = User_Event.objects.get(id=id)
+        user.current_user_event = user_event.id
+        user.save()
         user_questions = User_Question.objects.filter(fk_user=user, 
                                                     fk_question__fk_event=user_event.fk_event)
         if user_questions:
