@@ -176,7 +176,7 @@ class UserQuestionListView(APIView):
             user_question = user_questions[0]
             if user_question.fk_question.fk_event.end_time < datetime.now().replace(tzinfo=timezone.utc):
                 return Response(data={'error': 'event finished'},
-                                status=status.HTTP_404_NOT_FOUND)
+                                status=status.HTTP_403_FORBIDDEN)
 
             elif user_question.fk_question.fk_event.start_time > datetime.now().replace(tzinfo=timezone.utc):
                 return Response(data={'error': 'event not started yet'},

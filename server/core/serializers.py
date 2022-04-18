@@ -14,6 +14,7 @@ class CustomUserSerializer(UserSerializer):
             'username',
             'current_user_event',
         )
+        read_only_fields = ['current_user_event']
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=100)
