@@ -169,7 +169,7 @@ class UserQuestionListView(APIView):
     )
     def get(self, request, id, *args, **kwargs):
         user = request.user
-        user_event = User_Event.objects.get(fk_user=user, id=id, started=True, finished=False)
+        user_event = User_Event.objects.get(id=id)
         user_questions = User_Question.objects.filter(fk_user=user, 
                                                     fk_question__fk_event=user_event.fk_event)
         if user_questions:
@@ -189,14 +189,14 @@ class UserQuestionListView(APIView):
             return Response(data=serializer.data, status=status.HTTP_200_OK)
 
         else:
-            questions = list(Question.objects.filter(fk_event=id))
+            questions = list(Question.objects.filter(fk_event__id=user_event.fk_event.id))
             if questions:
                 random_questions = random.sample(questions, min(questions[0].fk_event.no_of_questions, len(questions)))
                 for question in random_questions:
                     User_Question.objects.create(fk_user=user, fk_question=question)
 
             user_questions = User_Question.objects.filter(fk_user=user,
-                                                        fk_question__fk_event__id=id) 
+                                                        fk_question__fk_event__id=user_event.fk_event.id)
             if user_questions:
                 serializer = UserQuestionGetSerializer(user_questions, many=True)
                 return Response(data=serializer.data, status=status.HTTP_200_OK)
