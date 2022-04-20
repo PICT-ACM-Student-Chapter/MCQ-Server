@@ -20,7 +20,7 @@ class Event(models.Model):
     no_of_questions = models.PositiveIntegerField(default=20)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    rules = models.TextField(null=False)
+    rules = models.TextField(null=True)
 
 
 class Question(models.Model):
