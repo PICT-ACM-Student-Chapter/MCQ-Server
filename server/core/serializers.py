@@ -14,6 +14,7 @@ class CustomUserSerializer(UserSerializer):
             'username',
             'current_user_event',
         )
+        read_only_fields = ['current_user_event']
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=100)
@@ -23,14 +24,14 @@ class LoginSerializer(serializers.Serializer):
 class EventListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ['id', 'name', 'start_time', 'end_time', 'ems_event_id', 'ems_slot_id', ]
+        fields = ['id', 'name', 'start_time', 'end_time', 'ems_event_id', 'ems_slot_id', 'image_url', 'rules']
 
 class UserEventListSerializer(serializers.ModelSerializer):
     fk_event = EventListSerializer()
 
     class Meta:
         model = User_Event
-        fields = ['id', 'fk_event', 'started']
+        fields = ['id', 'fk_event', 'started','finished']
 
 
 class UserEventSerializer(serializers.ModelSerializer):
@@ -51,7 +52,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     
     class Meta: 
         model = Question
-        fields = ['id', 'statement', 'options', 'fk_event']
+        fields = ['id', 'statement','code','image_url', 'options', 'fk_event']
 
 class UserQuestionGetSerializer(serializers.ModelSerializer):
     fk_question = QuestionSerializer()
