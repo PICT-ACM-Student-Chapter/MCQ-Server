@@ -41,6 +41,8 @@ class LoginView(APIView):
         if res.status_code == status.HTTP_401_UNAUTHORIZED:
             return Response(data=res.json(),
                             status=status.HTTP_401_UNAUTHORIZED)
+        elif res.status_code == status.HTTP_404_NOT_FOUND:
+            return Response(data=res.json(), status=status.HTTP_404_NOT_FOUND)
 
         # get user
         try:
