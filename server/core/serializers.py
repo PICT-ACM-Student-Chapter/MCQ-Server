@@ -24,7 +24,7 @@ class LoginSerializer(serializers.Serializer):
 class EventListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ['id', 'name', 'start_time', 'end_time', 'ems_event_id', 'ems_slot_id', 'image_url',]
+        fields = ['id', 'name', 'start_time', 'end_time', 'ems_event_id', 'ems_slot_id', 'image_url', 'rules']
 
 class UserEventListSerializer(serializers.ModelSerializer):
     fk_event = EventListSerializer()
