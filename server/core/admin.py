@@ -2,7 +2,12 @@ from django import forms
 from django.shortcuts import render
 from django.urls import path
 from django.contrib import admin
-from .models import Question
+from django.db import models
+from martor.widgets import AdminMartorWidget
+from django.contrib.auth.admin import UserAdmin
+import uuid
+
+from .models import Question, User_Event, User_Question, Event, User_Result, User
 # Register your models here.
 class CsvImp(forms.Form):
     csv_upload=forms.FileField()
@@ -32,4 +37,28 @@ class MyAdmin(admin.ModelAdmin):
         form=CsvImp()
         data={"form":form}
         return render(request,'csv_upload.html',data)
+    
+    formfield_overrides = {
+        models.TextField: {'widget': AdminMartorWidget},
+    }
+
+class CustomUserAdmin(UserAdmin):
+    fieldsets = (
+        *UserAdmin.fieldsets,
+        (
+            'Custom Fields',
+            {
+                'fields': (
+                    'current_user_event',
+                ),
+            },
+        ),
+    )
+admin.site.register(User, CustomUserAdmin)
+
 admin.site.register(Question,MyAdmin)
+
+admin.site.register(User_Event)
+admin.site.register(User_Question)
+admin.site.register(Event)
+admin.site.register(User_Result)
