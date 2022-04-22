@@ -15,7 +15,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import UserEventSerializer, UserEventListSerializer, UserQuestionAnswerSerializer, UserQuestionRequestSerializer, UserQuestionGetSerializer, LoginSerializer, EventListSerializer, QuestionSerializer
 from .models import Event, Question, User_Event, User_Question, User_Token
-from .tasks import process_result
+from .tasks import process_new_result, process_result
 # Create your views here.
 
 User = get_user_model()
@@ -230,3 +230,11 @@ class UserSubmitEventView(APIView):
             return Response(data={"success":"Test submitted successfully!"}, status=status.HTTP_200_OK)
 
         return Response(data={"error": "User not authorised"}, status=status.HTTP_403_FORBIDDEN)
+
+
+class UserSubmitAllEvents(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        _ = process_new_result.apply_async()
+        return Response(data={"success": "All results calculated"}, status=status.HTTP_200_OK)

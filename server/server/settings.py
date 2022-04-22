@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "core",
     "djoser",
     "martor",
+    "csvexport",
     "drf_yasg",
     "django_celery_results",
     "silk",
@@ -194,6 +195,10 @@ DJOSER = {
         'current_user': 'core.serializers.CustomUserSerializer'
     },
 }
+
+# CSV EXPORT SETTINGS 
+CSV_EXPORT_REFERENCE_DEPTH = 3
+CSV_EXPORT_EMPTY_VALUE = ''
 
 # MARTOR SETTINGS
 MARTOR_THEME = 'semantic'

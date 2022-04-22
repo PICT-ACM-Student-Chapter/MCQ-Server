@@ -4,6 +4,7 @@ from django.urls import path
 from django.contrib import admin
 from django.db import models
 from martor.widgets import AdminMartorWidget
+from csvexport.actions import csvexport
 from django.contrib.auth.admin import UserAdmin
 import uuid
 import pandas as pd
@@ -15,6 +16,10 @@ class CsvImp(forms.Form):
 
 class MyAdmin(admin.ModelAdmin):
     change_list_template = 'change_list.html'
+    list_diplay = ('id', 'statement', 'fk_event',)
+    list_filter = ('fk_event',)
+    search_fields = ('statement',)
+
     def get_urls(self):
         urls=super().get_urls()
         new_urls=[path('upload-csv/',self.upload_csv)]
@@ -56,11 +61,31 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
+
+
+class CustomEventAdmin(admin.ModelAdmin):
+    list_diplay = ('name', 'start_time', 'end_time',)
+
+
+class CustomUserEventAdmin(admin.ModelAdmin):
+    list_display = ('fk_user', 'started', 'finished',)
+    search_fields = ('fk_user',)
+
+
+class CustomUserResult(admin.ModelAdmin):
+    list_display = ('event', 'score')
+    actions = [csvexport]
+        
+    def event(self, obj):
+        return obj.fk_user_event.fk_event.name
+    
+
+    
 admin.site.register(User, CustomUserAdmin)
 
 admin.site.register(Question,MyAdmin)
 
-admin.site.register(User_Event)
+admin.site.register(User_Event, CustomUserEventAdmin)
 admin.site.register(User_Question)
-admin.site.register(Event)
-admin.site.register(User_Result)
+admin.site.register(Event, CustomEventAdmin)
+admin.site.register(User_Result, CustomUserResult)
