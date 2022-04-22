@@ -29,7 +29,12 @@ class MyAdmin(admin.ModelAdmin):
                     # id=fields[0],
                     statement=fields[0],
                     options=[fields[1],fields[2],fields[3],fields[4]],
+<<<<<<< HEAD
                     correct_option=uuid.UUID(fields[5]),
+=======
+                    correct_option=fields[5],
+                    fk_event=fields[6]
+>>>>>>> d1dee556f03ff5ad0867f56e672a1e0478aea3c1
                 )
         form=CsvImp()
         data={"form":form}
