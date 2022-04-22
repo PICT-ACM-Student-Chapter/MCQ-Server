@@ -14,6 +14,9 @@ class CsvImp(forms.Form):
 
 class MyAdmin(admin.ModelAdmin):
     change_list_template = 'change_list.html'
+    list_display=('id','statement','fk_event')
+    list_filter=('fk_event',)
+    search_fields=('id','statement','fk_event')
     def get_urls(self):
         urls=super().get_urls()
         new_urls=[path('upload-csv/',self.upload_csv)]
@@ -54,6 +57,7 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
+
 admin.site.register(User, CustomUserAdmin)
 
 admin.site.register(Question,MyAdmin)
