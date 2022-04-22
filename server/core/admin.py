@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.db import models
 from martor.widgets import AdminMartorWidget
 from django.contrib.auth.admin import UserAdmin
+import uuid
 
 from .models import Question, User_Event, User_Question, Event, User_Result, User
 # Register your models here.
@@ -28,7 +29,7 @@ class MyAdmin(admin.ModelAdmin):
                     # id=fields[0],
                     statement=fields[0],
                     options=[fields[1],fields[2],fields[3],fields[4]],
-                    correct_option=fields[5],
+                    correct_option=uuid.UUID(fields[5]),
                 )
         form=CsvImp()
         data={"form":form}
