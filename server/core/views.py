@@ -54,7 +54,7 @@ class LoginView(APIView):
             user.last_name = res.json().get('user').get('last_name')
             user.save()
         # Create user_token object for future use
-        User_Token.objects.create(fk_user=user, token=res.json().get('token'))
+        # User_Token.objects.create(fk_user=user, token=res.json().get('token'))
 
         if res.status_code == status.HTTP_200_OK:
             token = res.json().get('token')
