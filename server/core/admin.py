@@ -29,6 +29,7 @@ class MyAdmin(admin.ModelAdmin):
                     statement=fields[0],
                     options=[fields[1],fields[2],fields[3],fields[4]],
                     correct_option=fields[5],
+                    fk_event=fields[6]
                 )
         form=CsvImp()
         data={"form":form}
