@@ -19,13 +19,16 @@ class MyAdmin(admin.ModelAdmin):
             file_data=csv_file.read().decode("utf-8")
             csv_data=file_data.split('\n')
             for x in range(1,len(csv_data)-2):
-                fields=csv_data[x].split(",")
-                created=Question.objects.update_or_create(
-                    # id=fields[0],
-                    statement=fields[0],
-                    options=[fields[1],fields[2],fields[3],fields[4]],
-                    correct_option=fields[5],
-                )
+                fields=csv_data[x].split("|")
+                try:
+                    created=Question.objects.update_or_create(
+                        # id=fields[0],
+                        statement=fields[0],
+                        options=[fields[1],fields[2],fields[3],fields[4]],
+                        correct_option=fields[5],
+                    )
+                except:
+                    pass
         form=CsvImp()
         data={"form":form}
         return render(request,'csv_upload.html',data)
