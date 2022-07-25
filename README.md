@@ -1,6 +1,8 @@
 
 # MCQ Server
 
+[![CodeFactor](https://www.codefactor.io/repository/github/pict-acm-student-chapter/mcq-server/badge/master)](https://www.codefactor.io/repository/github/pict-acm-student-chapter/mcq-server/overview/master)
+
 This is the repo for the MCQ Platform's server with Django as the framework and PostgreSQL as the database.
 
 
