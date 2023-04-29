@@ -8,11 +8,17 @@ from csvexport.actions import csvexport
 from django.contrib.auth.admin import UserAdmin
 import uuid
 import pandas as pd
-
+from import_export.admin import ImportExportModelAdmin
 from .models import Question, User_Event, User_Question, Event, User_Result, User
+from .resources import QuestionResource
 # Register your models here.
 class CsvImp(forms.Form):
     csv_upload=forms.FileField()
+
+
+# @admin.register(Question)
+class QuestionAdmin(ImportExportModelAdmin):
+    resource_class = QuestionResource
 
 class MyAdmin(admin.ModelAdmin):
     change_list_template = 'change_list.html'
@@ -83,7 +89,7 @@ class CustomUserResult(admin.ModelAdmin):
     
 admin.site.register(User, CustomUserAdmin)
 
-admin.site.register(Question,MyAdmin)
+admin.site.register(Question,QuestionAdmin)
 
 admin.site.register(User_Event, CustomUserEventAdmin)
 admin.site.register(User_Question)
