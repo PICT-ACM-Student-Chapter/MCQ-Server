@@ -29,8 +29,19 @@ To get a local copy of this template up and running on your machine, follow thes
 ### Installation
 - Clone the repo `git clone https://github.com/PICT-ACM-Student-Chapter/MCQ-Server.git`
 - Change the current directory to the template `cd MCQ-Server`
+- Run command `git checkout 23_beta`
 - Build the docker containers`docker-compose -f docker-compose.dev.yml build` for the dev containers and `docker-compose -f docker-compose.prod.yml build` for the prod containers
 - Run the docker containers`docker-compose -f docker-compose.dev.yml up` for the dev containers and `docker-compose -f docker-compose.prod.yml up` for the prod containers
+- Simultaneously open new terminal and run `docker exec -it server /bin/bash`
+- Now to make migrations , run the following commands 
+    -`python manage.py makemigrations core`
+    -`python manage.py makemigrations`
+    -`python manage.py migrate`
+    -`python manage.py shell < tools/create_superuser.py`
+    -`python manage.py collectstatic --noinput`
+- Now in browser open `localhost:8000/admin`
+
+
 
 ## API Documentation
 API documentation is done using swagger. Visit `/swagger` for API documentation.
