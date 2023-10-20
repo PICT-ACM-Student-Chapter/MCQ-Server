@@ -38,7 +38,13 @@ class LoginView(APIView):
             'password': password
         }
         res = requests.post(url, data=data, verify=False)
+
+
+        print("RESPONSE==============")
+        print(url)
+        
         if res.status_code == status.HTTP_401_UNAUTHORIZED:
+            
             return Response(data=res.json(),
                             status=status.HTTP_401_UNAUTHORIZED)
         elif res.status_code == status.HTTP_404_NOT_FOUND:
