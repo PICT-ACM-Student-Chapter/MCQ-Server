@@ -69,11 +69,17 @@ class LoginView(APIView):
             myevent_res = requests.get(url, headers={
                 'Authorization': 'Bearer ' + token}, verify=False)
 
+            print("###########################")
+            print(myevent_res.json())
+
             if myevent_res.status_code == status.HTTP_401_UNAUTHORIZED:
                 return Response(data=myevent_res.json(),
                                 status=status.HTTP_401_UNAUTHORIZED)
-
+            
+            print("###########################")
+            print(myevent_res.json())
             events = myevent_res.json().get('events')
+
             for event in events:
                 try:
                     slot_id = event.get('fk_slot')
@@ -82,7 +88,10 @@ class LoginView(APIView):
 
                 if slot_id:
                     try:
+                        print("SLOT ID=====================")
+                        print(ems_slot_id+" "+slot_id)
                         event = Event.objects.get(ems_slot_id=slot_id)
+
                         # create user contest
                         ue, _ = User_Event.objects.get_or_create(
                         fk_user=user, fk_event=event)
