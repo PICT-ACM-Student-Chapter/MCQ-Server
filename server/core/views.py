@@ -89,7 +89,7 @@ class LoginView(APIView):
                 if slot_id:
                     try:
                         print("SLOT ID=====================")
-                        print(ems_slot_id+" "+slot_id)
+                        print(slot_id)
                         event = Event.objects.get(ems_slot_id=slot_id)
 
                         # create user contest
